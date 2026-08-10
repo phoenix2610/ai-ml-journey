@@ -1,0 +1,70 @@
+# Sorting rules. Highest priority wins; ties go to whichever is declared first.
+#
+# Folder templates understand {year} {month} {month_name} {day} {ext}.
+# Anything matching no rule lands in the fallback folder.
+
+fallback = "Other"
+
+[[rule]]
+name = "documents"
+folder = "Documents"
+extensions = ["pdf", "doc", "docx", "odt", "rtf", "txt", "md", "epub"]
+
+[[rule]]
+name = "spreadsheets"
+folder = "Documents/Spreadsheets"
+extensions = ["xls", "xlsx", "csv", "tsv", "ods"]
+priority = 5
+
+[[rule]]
+name = "slides"
+folder = "Documents/Slides"
+extensions = ["ppt", "pptx", "odp", "key"]
+priority = 5
+
+[[rule]]
+name = "images"
+folder = "Images/{year}"
+extensions = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "tiff", "heic", "svg"]
+
+# Screenshots are images, but a higher priority pulls them out of the year
+# folders and into their own bucket.
+[[rule]]
+name = "screenshots"
+folder = "Images/Screenshots/{year}-{month}"
+patterns = ["Screenshot*", "Screen Shot*", "Snipaste*", "*_screenshot.*"]
+priority = 20
+
+[[rule]]
+name = "video"
+folder = "Video/{year}"
+extensions = ["mp4", "mkv", "mov", "avi", "webm", "m4v", "wmv"]
+
+[[rule]]
+name = "audio"
+folder = "Audio"
+extensions = ["mp3", "wav", "flac", "aac", "ogg", "m4a", "opus"]
+
+[[rule]]
+name = "archives"
+folder = "Archives"
+extensions = ["zip", "tar", "gz", "bz2", "xz", "7z", "rar", "zst"]
+
+[[rule]]
+name = "code"
+folder = "Code/{ext}"
+extensions = ["py", "js", "ts", "jsx", "tsx", "go", "rs", "c", "h", "cpp", "java", "rb", "sh"]
+
+[[rule]]
+name = "installers"
+folder = "Installers"
+extensions = ["deb", "rpm", "appimage", "exe", "msi", "dmg", "pkg", "flatpakref"]
+priority = 10
+
+# Catch-all for very large files regardless of type, so a 4 GB stray does not
+# quietly disappear into Other/. Lowest priority: any real rule beats it.
+[[rule]]
+name = "huge"
+folder = "Large Files"
+min_size = 1_073_741_824
+priority = -5

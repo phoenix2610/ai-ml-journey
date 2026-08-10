@@ -1,0 +1,2 @@
+# Runtime: standard library only (tomllib requires Python 3.11+).
+pytest>=8.0
