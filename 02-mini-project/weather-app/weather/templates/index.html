@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}
+  {%- if forecast %}{{ forecast.location.name }} weather{% else %}Weather{% endif -%}
+{% endblock %}
+
+{% block content %}
+<header class="masthead">
+  <h1>Weather</h1>
+  <form class="search" action="{{ url_for('index') }}" method="get" role="search">
+    <label class="visually-hidden" for="q">Place name</label>
+    <input
+      id="q" name="q" type="search" value="{{ query }}"
+      placeholder="Try Pune, Reykjavik, Valparaiso…"
+      autocomplete="off" autofocus required>
+    <input type="hidden" name="units" value="{{ units }}">
+    <button type="submit">Search</button>
+  </form>
+
+  <nav class="units">
+    <a href="{{ url_for('index', q=query, units='metric') }}"
+       class="{{ 'on' if units == 'metric' }}">°C</a>
+    <a href="{{ url_for('index', q=query, units='imperial') }}"
+       class="{{ 'on' if units == 'imperial' }}">°F</a>
+  </nav>
+</header>
+
+{% if error %}
+  <p class="error" role="alert">{{ error }}</p>
+{% endif %}
+
+{% if forecast %}
+  {% set c = forecast.current %}
+  <section class="current icon-{{ c.icon }}" aria-label="Current conditions">
+    <p class="place">{{ forecast.location.label }}</p>
+
+    <p class="temp">
+      {{ c.temperature | round | int }}<span class="unit">{{ forecast.units.temperature }}</span>
+    </p>
+
+    <p class="desc">{{ c.description }}</p>
+    <p class="feels">Feels like {{ c.feels_like | round | int }}{{ forecast.units.temperature }}</p>
+
+    <dl class="facts">
+      <div><dt>Humidity</dt><dd>{{ c.humidity }}%</dd></div>
+      <div><dt>Wind</dt><dd>{{ c.wind_speed | round(1) }} {{ forecast.units.wind }} {{ c.wind_compass }}</dd></div>
+      <div><dt>Sunrise</dt><dd>{{ forecast.daily[0].sunrise }}</dd></div>
+      <div><dt>Sunset</dt><dd>{{ forecast.daily[0].sunset }}</dd></div>
+    </dl>
+  </section>
+
+  <section aria-label="Daily forecast">
+    <h2 class="section-title">Next {{ forecast.daily | length }} days</h2>
+    <ol class="days">
+      {% for day in forecast.daily %}
+        <li class="day">
+          <span class="day-name">{{ day.weekday }}</span>
+          <span class="day-icon icon-{{ day.icon }}" aria-hidden="true"></span>
+          <span class="day-desc">{{ day.description }}</span>
+          <span class="day-rain {{ 'muted' if day.precipitation_chance < 20 }}">
+            {{ day.precipitation_chance }}%
+          </span>
+          <span class="day-temps">
+            <b>{{ day.temp_max | round | int }}°</b>
+            <span class="muted">{{ day.temp_min | round | int }}°</span>
+          </span>
+        </li>
+      {% endfor %}
+    </ol>
+  </section>
+
+  <p class="meta">
+    Updated {{ c.time.strftime('%H:%M') }} local &middot;
+    {{ forecast.location.timezone }} &middot;
+    <a href="{{ url_for('api_weather', q=query, units=units) }}">JSON</a>
+  </p>
+
+{% elif not error %}
+  <p class="empty">Search for a place to see its seven-day forecast.</p>
+{% endif %}
+{% endblock %}

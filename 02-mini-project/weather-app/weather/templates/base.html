@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Weather{% endblock %}</title>
+  <meta name="description" content="Seven-day forecast for anywhere, powered by Open-Meteo.">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#9925;</text></svg>">
+</head>
+<body>
+  <main class="wrap">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    <p>
+      Data from <a href="https://open-meteo.com/" rel="noopener">Open-Meteo</a>.
+      No API key, no tracking.
+    </p>
+  </footer>
+</body>
+</html>

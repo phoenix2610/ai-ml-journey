@@ -1,0 +1,219 @@
+/* Single stylesheet, no build step, no framework.
+   Light and dark both come from one set of custom properties. */
+
+:root {
+  --bg: #f4f6fb;
+  --card: #ffffff;
+  --ink: #16202e;
+  --muted: #64748b;
+  --line: #e2e8f0;
+  --accent: #2563eb;
+  --error-bg: #fef2f2;
+  --error-ink: #991b1b;
+  --shadow: 0 1px 2px rgb(16 32 46 / 6%), 0 8px 24px rgb(16 32 46 / 8%);
+  --radius: 14px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0d1420;
+    --card: #161f2e;
+    --ink: #e8eef7;
+    --muted: #94a3b8;
+    --line: #253243;
+    --accent: #60a5fa;
+    --error-bg: #2a1416;
+    --error-ink: #fca5a5;
+    --shadow: 0 1px 2px rgb(0 0 0 / 30%), 0 8px 24px rgb(0 0 0 / 35%);
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.55 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap { max-width: 44rem; margin: 0 auto; padding: 2rem 1.25rem 1rem; }
+
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+/* ------------------------------------------------------------- masthead */
+
+.masthead h1 {
+  margin: 0 0 1rem;
+  font-size: 1.5rem;
+  letter-spacing: -0.02em;
+}
+
+.search { display: flex; gap: 0.5rem; }
+
+.search input[type="search"] {
+  flex: 1;
+  padding: 0.7rem 0.95rem;
+  font-size: 1rem;
+  color: var(--ink);
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.search input:focus-visible,
+.search button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.search button {
+  padding: 0.7rem 1.3rem;
+  font: inherit;
+  font-weight: 600;
+  color: #fff;
+  background: var(--accent);
+  border: 0;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.units { display: flex; gap: 0.25rem; margin: 0.75rem 0 0; }
+
+.units a {
+  padding: 0.2rem 0.65rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+  text-decoration: none;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+
+.units a.on {
+  color: #fff;
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+/* -------------------------------------------------------------- current */
+
+.current {
+  position: relative;
+  margin: 1.5rem 0;
+  padding: 1.75rem;
+  overflow: hidden;
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+/* A soft wash keyed to the conditions, so the card reads at a glance. */
+.current::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.14;
+}
+.current.icon-sun::after       { background: radial-gradient(circle at 88% 12%, #fbbf24, transparent 55%); }
+.current.icon-sun-cloud::after { background: radial-gradient(circle at 88% 12%, #93c5fd, transparent 55%); }
+.current.icon-cloud::after     { background: radial-gradient(circle at 88% 12%, #94a3b8, transparent 55%); }
+.current.icon-rain::after,
+.current.icon-drizzle::after   { background: radial-gradient(circle at 88% 12%, #3b82f6, transparent 55%); }
+.current.icon-snow::after,
+.current.icon-sleet::after     { background: radial-gradient(circle at 88% 12%, #bae6fd, transparent 55%); }
+.current.icon-storm::after     { background: radial-gradient(circle at 88% 12%, #7c3aed, transparent 55%); }
+.current.icon-fog::after       { background: radial-gradient(circle at 88% 12%, #cbd5e1, transparent 55%); }
+
+.place { margin: 0; font-weight: 600; color: var(--muted); }
+
+.temp {
+  margin: 0.2rem 0 0;
+  font-size: 4rem;
+  font-weight: 200;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+.temp .unit { font-size: 1.5rem; font-weight: 400; color: var(--muted); }
+
+.desc  { margin: 0.4rem 0 0; font-size: 1.1rem; font-weight: 600; }
+.feels { margin: 0.1rem 0 0; color: var(--muted); font-size: 0.9rem; }
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
+  gap: 0.75rem;
+  margin: 1.5rem 0 0;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+}
+.facts dt { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.facts dd { margin: 0.15rem 0 0; font-weight: 600; }
+
+/* ----------------------------------------------------------------- days */
+
+.section-title {
+  margin: 2rem 0 0.75rem;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.days { margin: 0; padding: 0; list-style: none; background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); }
+
+.day {
+  display: grid;
+  grid-template-columns: 3rem 1.5rem 1fr auto auto;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid var(--line);
+}
+.day:last-child { border-bottom: 0; }
+
+.day-name  { font-weight: 600; }
+.day-desc  { color: var(--muted); font-size: 0.9rem; }
+.day-rain  { font-size: 0.85rem; color: var(--accent); font-variant-numeric: tabular-nums; }
+.day-temps { font-variant-numeric: tabular-nums; }
+.muted     { color: var(--muted); }
+
+/* Small squares standing in for icons -- no image requests, no icon font. */
+.day-icon { width: 0.85rem; height: 0.85rem; border-radius: 3px; display: inline-block; }
+.icon-sun.day-icon       { background: #fbbf24; }
+.icon-sun-cloud.day-icon { background: #93c5fd; }
+.icon-cloud.day-icon     { background: #94a3b8; }
+.icon-rain.day-icon,
+.icon-drizzle.day-icon   { background: #3b82f6; }
+.icon-snow.day-icon,
+.icon-sleet.day-icon     { background: #bae6fd; }
+.icon-storm.day-icon     { background: #7c3aed; }
+.icon-fog.day-icon       { background: #cbd5e1; }
+
+@media (max-width: 30rem) {
+  .day { grid-template-columns: 2.6rem 1rem 1fr auto; }
+  .day-desc { display: none; }
+  .temp { font-size: 3.2rem; }
+}
+
+/* ---------------------------------------------------------------- misc */
+
+.error {
+  padding: 0.85rem 1.1rem;
+  color: var(--error-ink);
+  background: var(--error-bg);
+  border-radius: var(--radius);
+}
+
+.empty { margin: 3rem 0; color: var(--muted); text-align: center; }
+
+.meta { margin: 1rem 0; font-size: 0.8rem; color: var(--muted); }
+
+.footer { max-width: 44rem; margin: 0 auto; padding: 1rem 1.25rem 2.5rem; font-size: 0.8rem; color: var(--muted); }
+
+a { color: var(--accent); }
