@@ -1,0 +1,22 @@
+# Render blueprint. Push this file and Render provisions the service from it,
+# so the deployment is version-controlled rather than clicked together in a UI.
+#
+#   https://dashboard.render.com/blueprints -> New Blueprint Instance
+
+services:
+  - type: web
+    name: weather-app
+    runtime: docker
+    plan: free
+    region: singapore          # closest to the intended users
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /healthz
+    autoDeploy: true
+    envVars:
+      - key: DEFAULT_PLACE
+        value: Pune
+      - key: PORT
+        value: 8000
+      - key: PYTHONUNBUFFERED
+        value: "1"
