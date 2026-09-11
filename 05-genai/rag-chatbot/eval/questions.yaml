@@ -1,0 +1,78 @@
+# Golden question set.
+#
+# Hand-labelled, deliberately small, and deliberately mixed. Each case declares
+# which document *should* be retrieved and which facts must appear, so a failure
+# points at either retrieval or generation rather than "the answer felt wrong".
+#
+#   expect_docs    doc_id(s) that must reach the context. Empty = not graded.
+#   expect_facts   substrings that must appear in the answer (loosely matched:
+#                  '38.8 percent' matches '38.8%').
+#   should_refuse  true when the corpus cannot answer it and declining is correct.
+#
+# The unanswerable cases are the most important ones here. A system that never
+# says "I don't know" is not grounded, it is confident.
+
+cases:
+  # ------------------------------------------------- straightforward lookups
+  - question: What was the cost-optimal threshold for the fraud model?
+    expect_docs: [fraud]
+    expect_facts: ["0.1141"]
+    note: Single exact number, stated once in the corpus.
+
+  - question: What average precision did the supervised fraud model achieve?
+    expect_docs: [fraud]
+    expect_facts: ["0.3516"]
+
+  - question: What percentage of the book did the retention campaign contact?
+    expect_docs: [churn]
+    expect_facts: ["38.8"]
+
+  - question: What is the mean absolute error of the house price model?
+    expect_docs: [house]
+    expect_facts: ["13772"]
+
+  # ------------------------------------------- needs the right section, not
+  #                                             just the right document
+  - question: What was the churn cutoff probability?
+    expect_docs: [churn]
+    expect_facts: ["0.177"]
+    note: Same document as the campaign question, different section.
+
+  - question: Which feature mattered most for predicting house prices?
+    expect_docs: [house]
+    expect_facts: ["area"]
+
+  # ----------------------------------------------- rare literal tokens, where
+  #                                                 dense retrieval is weakest
+  - question: What R squared did the house price model reach?
+    expect_docs: [house]
+    expect_facts: ["0.934"]
+    note: Bare number; hybrid retrieval should win here over dense alone.
+
+  - question: What was the ROC-AUC of the isolation forest?
+    expect_docs: [fraud]
+    expect_facts: ["0.7585"]
+
+  # ------------------------------------------------------ comparative, needs
+  #                                                        two chunks together
+  - question: How did precision and recall differ at the default 0.5 threshold?
+    expect_docs: [fraud]
+    expect_facts: ["100", "13.3"]
+    note: Requires the threshold section specifically.
+
+  # ----------------------------------------------------------- unanswerable.
+  #                                    The corpus genuinely does not say these.
+  - question: What is the capital of France?
+    should_refuse: true
+    note: Entirely outside the corpus. Parametric knowledge must not leak in.
+
+  - question: How many employees does the company have?
+    should_refuse: true
+    note: Plausible-sounding and absent. The tempting failure is to invent one.
+
+  - question: What was the fraud model's F1 score on the validation set?
+    should_refuse: true
+    note: >
+      Adjacent to real content -- the corpus discusses fraud metrics and
+      thresholds but never states an F1 or a validation split. This is the
+      hardest refusal: everything about it looks answerable.
